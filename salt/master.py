@@ -610,6 +610,25 @@ class AESFuncs(object):
                     return True
         return False
 
+    def __is_path_hidden(self, fn):
+        '''
+        If path_hide_regex or path_hide_glob were given in config,
+        compare the given path against all of them and return True
+        on the first match
+        '''
+        if self.opts['path_hide_regex']:
+            for r in self.opts['path_hide_regex']:
+                if re.search(r, fn):
+                    log.debug('Path matching path_hide_regex. Skipping: {0}'.format(fn))
+                    return True
+
+        if self.opts['path_hide_glob']:
+            for g in self.opts['path_hide_glob']:
+                if fnmatch.fnmatch(fn, g):
+                    log.debug('Path matching path_hide_glob. Skipping: {0}'.format(fn))
+                    return True
+        return False
+
     def _ext_nodes(self, load):
         '''
         Return the results from an external node classifier if one is
@@ -719,13 +738,14 @@ class AESFuncs(object):
 
         for path in self.opts['file_roots'][load['env']]:
             for root, dirs, files in os.walk(path, followlinks=True):
-                for fn in files:
-                    rel_fn = os.path.relpath(
-                                os.path.join(root, fn),
-                                path
-                            )
-                    if not self.__is_file_ignored(rel_fn):
-                        ret.append(rel_fn)
+                if not self.__is_path_hidden(os.path.relpath(root, path)):
+                    for fn in files:
+                        rel_fn = os.path.relpath(
+                                    os.path.join(root, fn),
+                                    path
+                                )
+                        if not self.__is_file_ignored(rel_fn):
+                            ret.append(rel_fn)
         return ret
 
     def _file_list_emptydirs(self, load):
@@ -739,7 +759,7 @@ class AESFuncs(object):
             for root, dirs, files in os.walk(path, followlinks=True):
                 if len(dirs) == 0 and len(files) == 0:
                     rel_fn = os.path.relpath(root, path)
-                    if not self.__is_file_ignored(rel_fn):
+                    if not self.__is_file_ignored(rel_fn) and not self.__is_path_hidden(rel_fn):
                         ret.append(rel_fn)
         return ret
 
@@ -752,7 +772,9 @@ class AESFuncs(object):
             return ret
         for path in self.opts['file_roots'][load['env']]:
             for root, dirs, files in os.walk(path, followlinks=True):
-                ret.append(os.path.relpath(root, path))
+                rel_fn = os.path.relpath(root, path)
+                if not self.__is_path_hidden(rel_fn):
+                    ret.append(rel_fn)
         return ret
 
     def _master_opts(self, load):
