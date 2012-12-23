@@ -249,6 +249,22 @@
 #  - '*.pyc'
 #  - '*/somefolder/*.bak'
 
+# A regular expression (or a list of expressions) that will be matched
+# against the file path before exposing to minions.  This allows for distribution
+# of sensitive data to specific minions using a suitably long and securely
+# generated path (e.g. private/gK9yOuETT9pKdnsvWAhbbHoYqJlchxDD) which can be securely
+# shared via a pillar.  Note you will not be able to use the file.recurse state
+# for paths that match. By default nothing is hidden.
+#path_hide_regex:
+#  - '/private(\/.*)?/'
+
+# A path glob (or list of path globs) that will be matched against the file
+# path before exposing to minions via directory functions.  This is similar
+# to path_hide_regex above, but works on globs instead of regex. By default
+# nothing is hidden.
+#path_hide_glob:
+#  - 'private/*'
+
 # Pillar Configurations:
 # The Salt Pillar, is a system that allows for the building of global data
 # that is refined based on minion. Basically, the pillar creates data that
