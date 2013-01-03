@@ -301,6 +301,16 @@
 # master config file that can then be used on minions.
 #pillar_opts: True
 
+# Private environments
+# Exclude certain environments from file listing operations, allowing you to
+# store sensitive information within your fileserver.  Note that all minions
+# can still access the files if they know the path so you should use a suitable
+# directory structure and distribute the paths via the secure pillar mechanism.
+# See https://github.com/saltstack/salt/issues/1543
+
+# private_envs:
+#   - private
+
 #####          Syndic settings       #####
 ##########################################
 # The Salt syndic is used to pass commands through a master from a higher

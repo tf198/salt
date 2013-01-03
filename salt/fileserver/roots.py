@@ -83,8 +83,9 @@ def file_list(load):
     Return a list of all files on the file server in a specified
     environment
     '''
+    
     ret = []
-    if load['env'] not in __opts__['file_roots']:
+    if load['env'] not in __opts__['file_roots'] or load['env'] in __opts__['private_envs']:
         return ret
 
     for path in __opts__['file_roots'][load['env']]:
@@ -104,7 +105,7 @@ def file_list_emptydirs(load):
     Return a list of all empty directories on the master
     '''
     ret = []
-    if load['env'] not in __opts__['file_roots']:
+    if load['env'] not in __opts__['file_roots'] or load['env'] in __opts__['private_envs']:
         return ret
     for path in __opts__['file_roots'][load['env']]:
         for root, dirs, files in os.walk(path, followlinks=True):
@@ -120,7 +121,7 @@ def dir_list(load):
     Return a list of all directories on the master
     '''
     ret = []
-    if load['env'] not in __opts__['file_roots']:
+    if load['env'] not in __opts__['file_roots'] or load['env'] in __opts__['private_envs']:
         return ret
     for path in __opts__['file_roots'][load['env']]:
         for root, dirs, files in os.walk(path, followlinks=True):
