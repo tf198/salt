@@ -307,7 +307,7 @@
 # can still access the files if they know the path so you should use a suitable
 # directory structure and distribute the paths via the secure pillar mechanism.
 # See https://github.com/saltstack/salt/issues/1543
-
+#
 # private_envs:
 #   - private
 
